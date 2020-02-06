@@ -17,6 +17,8 @@ app.use(bodyParser.json())
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
+var hospitalRoutes = require('./routes/hospital');
+var medicoRoutes = require('./routes/medico');
 
 // CONECTAR A BASE DE DATOS
 
@@ -36,4 +38,6 @@ app.listen(3000, () =>{
 
 app.use('/Usuario', usuarioRoutes);
 app.use('/Login', loginRoutes);
+app.use('/Hospital', hospitalRoutes);
+app.use('/Medico', medicoRoutes);
 app.use('/', appRoutes);
