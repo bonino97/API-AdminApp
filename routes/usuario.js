@@ -1,12 +1,12 @@
-var express = require('express');
-var bcrypt = require('bcryptjs');
-var app = express();
-var jwt = require('jsonwebtoken');
-var mdAutenticacion = require('../middlewares/autenticacion');
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const app = express();
+const jwt = require('jsonwebtoken');
+const mdAutenticacion = require('../middlewares/autenticacion');
 
 //MODELOS
 
-var Usuario = require('../models/usuario');
+const Usuario = require('../models/usuario');
 
 //ROUTES
 
@@ -17,7 +17,13 @@ var Usuario = require('../models/usuario');
 
 app.get('/', (req, res, next) => {
 
-    Usuario.find({}, 'nombre email img role').exec((err,usuarios) => {
+    var pag = req.query.pag || 0;
+    pag = Number(pag);
+
+    Usuario.find({}, 'nombre img')
+    .skip(pag)
+    .limit(5)
+    .exec((err,usuarios) => {
         if(err){
             return res.status(400).json({
                 ok: false,
@@ -25,9 +31,12 @@ app.get('/', (req, res, next) => {
                 errors: err
             });
         }
-        res.status(200).json({
-            ok: true,
-            usuarios
+
+        Usuario.count({}, (err, cont) => {
+            res.status(200).json({
+                ok: true,
+                usuarios
+            });
         });
     });
 });
@@ -84,7 +93,7 @@ app.put('/:id', mdAutenticacion.verificaToken, (req,res) => {
 // Crear un nuevo Usuario
 //=====================================================================
 
-app.post('/', mdAutenticacion.verificaToken, (req,res) => {
+app.post('/', (req,res) => {
     
     var body = req.body;
     var usuario = new Usuario({

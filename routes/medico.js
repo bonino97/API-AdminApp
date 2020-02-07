@@ -1,10 +1,10 @@
-var express = require('express');
-var app = express();
-var mdAutenticacion = require('../middlewares/autenticacion');
+const express = require('express');
+const app = express();
+const mdAutenticacion = require('../middlewares/autenticacion');
 
 //MODELOS
 
-var Medico = require('../models/medico');
+const Medico = require('../models/medico');
 
 //ROUTES
 
@@ -15,7 +15,15 @@ var Medico = require('../models/medico');
 
 app.get('/', (req, res, next) => {
 
-    Medico.find({}).exec((err,medicos) => {
+    var pag = req.query.pag || 0;
+    pag = Number(pag);
+
+    Medico.find({})
+    .skip(pag)
+    .limit(5)
+    .populate('usuario', 'nombre email')
+    .populate('hospital', 'nombre')
+    .exec((err,medicos) => {
         if(err){
             return res.status(400).json({
                 ok: false,

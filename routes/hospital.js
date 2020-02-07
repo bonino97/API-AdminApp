@@ -1,10 +1,10 @@
-var express = require('express');
-var app = express();
-var mdAutenticacion = require('../middlewares/autenticacion');
+const express = require('express');
+const app = express();
+const mdAutenticacion = require('../middlewares/autenticacion');
 
 //MODELOS
 
-var Hospital = require('../models/hospital');
+const Hospital = require('../models/hospital');
 
 //ROUTES
 
@@ -14,8 +14,15 @@ var Hospital = require('../models/hospital');
 //=====================================================================
 
 app.get('/', (req, res, next) => {
+    var pag = req.query.pag || 0;
+    pag = Number(pag);
 
-    Hospital.find({}).exec((err,hospitales) => {
+
+    Hospital.find({})
+    .skip(pag)
+    .limit(5)
+    .populate('usuario', 'nombre email')
+    .exec((err,hospitales) => {
         if(err){
             return res.status(400).json({
                 ok: false,

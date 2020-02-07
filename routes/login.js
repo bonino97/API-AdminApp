@@ -1,12 +1,12 @@
-var express = require('express');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
-var SEED = require('../config/config').SEED;
-var app = express();
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const SEED = require('../config/config').SEED;
+const app = express();
 
 //MODELOS
 
-var Usuario = require('../models/usuario');
+const Usuario = require('../models/usuario');
 
 //ROUTES
 
