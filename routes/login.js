@@ -46,13 +46,14 @@ app.post('/', (req,res) => {
         }
 
         usuarioDB.password = 'NULL';
+        
         var token = jwt.sign({usuario: usuarioDB}, SEED, {expiresIn: 14400});
 
         res.status(200).json({
             ok: true,
             mensaje: 'Login Correcto',
             token: token,
-            id: usuarioDB._id
+            usuario: usuarioDB
         });
     });
 });

@@ -20,7 +20,7 @@ app.get('/', (req, res, next) => {
     var pag = req.query.pag || 0;
     pag = Number(pag);
 
-    Usuario.find({}, 'nombre img')
+    Usuario.find({}, 'nombre img email')
     .skip(pag)
     .limit(5)
     .exec((err,usuarios) => {

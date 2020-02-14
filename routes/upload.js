@@ -3,12 +3,13 @@ const fileUpload = require('express-fileupload');
 const fs = require('fs');
 
 const app = express();
-app.use(fileUpload());
+
 
 const Usuario = require('../models/usuario');
 const Medico = require('../models/medico');
 const Hospital = require('../models/hospital');
 
+app.use(fileUpload());
 
 //ROUTES
 
@@ -19,7 +20,7 @@ app.put('/:tipo/:id', (req, res, next) => {
 
     var colecValida = ['Hospitales','Medicos','Usuarios'];
 
-    if(colecValida.indexOf(tipoColeccion)<0){
+    if(colecValida.indexOf(tipoColeccion) < 0){
         return res.status(401).json({
             ok: false,
             mensaje: 'Tipo de coleccion invalida',
@@ -80,6 +81,14 @@ function subirPorTipo (tipo, id, nombreArchivo, res) {
 
         Usuario.findById(id,'nombre img').exec((err,usuario) => {
 
+            if(!usuario){
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Usuario no existe.',
+                    errors: {message: 'Usuario no existe.'}
+                });
+            }
+
             if(err){
                 return res.status(500).json({
                     ok: false,
@@ -112,8 +121,18 @@ function subirPorTipo (tipo, id, nombreArchivo, res) {
         Medico.findById(id,'nombre img')
                 .exec((err,medico) => {
 
-            const pathAnterior = `../uploads/medicos/${medico.img}`;
 
+
+
+            if(!medico){
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Medico no existe.',
+                })
+            }
+
+            const pathAnterior = `../uploads/medicos/${medico.img}`;
+            
             //Si existe, elimina la imagen anterior.
             if(medico.img){
                 if(fs.existsSync(pathAnterior)){
@@ -135,6 +154,14 @@ function subirPorTipo (tipo, id, nombreArchivo, res) {
     if(tipo === 'Hospitales'){
         Hospital.findById(id,'nombre img')
                 .exec((err,hospital) => {
+
+            if(!hospital){
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Hospital no existe.',
+                    errors: {message: 'Hospital no existe.'}
+                });
+            }
 
             const pathAnterior = `../uploads/hospitales/${hospital.img}`;
 
