@@ -20,7 +20,7 @@ app.get('/', (req, res, next) => {
     var pag = req.query.pag || 0;
     pag = Number(pag);
 
-    Usuario.find({}, 'nombre img email')
+    Usuario.find({}, 'nombre img email role')
     .skip(pag)
     .limit(5)
     .exec((err,usuarios) => {
@@ -35,7 +35,8 @@ app.get('/', (req, res, next) => {
         Usuario.count({}, (err, cont) => {
             res.status(200).json({
                 ok: true,
-                usuarios
+                usuarios,
+                total: cont
             });
         });
     });
@@ -125,7 +126,7 @@ app.post('/', (req,res) => {
 // Eliminar Usuario
 //=====================================================================
 
-app.delete('/:id', (req,res) => {
+app.delete('/:id', mdAutenticacion.verificaToken, (req,res) => {
     
     id = req.params.id;
 
